@@ -3,13 +3,17 @@
 SESSION_NAME=personal
 
 # ワークスペースの数
-WORKSPACE_COUNT=4
+WORKSPACE_COUNT=8
 
 # ワークスペース(タブ)の名前
 WORKSPACE_NAME=(
   blog
   blog-front
-  raycast-scripts
+  skill
+  astro
+  raycast
+  hiragana
+  valwind
   workspace
 )
 
@@ -17,7 +21,11 @@ WORKSPACE_NAME=(
 WORKSPACE_PATH=(
   ~/dev/github.com/2ndPINEW/blog
   ~/dev/github.com/2ndPINEW/blog-front
+  ~/dev/github.com/2ndPINEW/skill
+  ~/dev/github.com/2ndPINEW/astro
   ~/dev/github.com/FukeKazki/raycast-scripts
+  ~/dev/github.com/FukeKazki/HiraganaParser
+  ~/dev/github.com/KOSENation/valwind
   ~/dev/github.com/2ndPINEW/workspace
 )
 
