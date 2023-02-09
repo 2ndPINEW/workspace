@@ -1,0 +1,1 @@
+ln -sf ~/dev/github.com/2ndPINEW/workspace ~/workspace
