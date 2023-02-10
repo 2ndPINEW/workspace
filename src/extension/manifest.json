@@ -1,0 +1,13 @@
+{
+  "name": "TabGroupManager",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "タブグループ管理",
+  "background": {
+    "service_worker": "index.js"
+  },
+  "permissions": [
+    "tabGroups",
+    "tabs"
+  ]
+}
