@@ -42,12 +42,12 @@ for ((I=1; I<=$WORKSPACE_COUNT; I++)); do
   # ウィンドウの名前を変更
   tmux rename-window "$WORKSPACE_NAME[$I]"
   # 縦 50% の位置で分割
-  tmux split-window -v -p 50 -c "#{pane_current_path}"
+  # tmux split-window -v -p 50 -c "#{pane_current_path}"
   # 横 2等分に分割
   tmux split-window -h -p 50 -c "#{pane_current_path}"
   tmux select-pane -t 0
-  tmux split-window -h -p 50 -c "#{pane_current_path}"
-  tmux select-pane -t 0
+  # tmux split-window -h -p 50 -c "#{pane_current_path}"
+  # tmux select-pane -t 0
 done
 # 最初のウィンドウにフォーカスする
 tmux select-window -t 0
