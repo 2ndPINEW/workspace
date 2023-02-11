@@ -37,6 +37,7 @@ async function changeTabGroup (res) {
                 )
             });
             chrome.tabGroups.move(group.id, { index: 1 })
+            chrome.tabGroups.update(group.id, { collapsed: false })
             chrome.tabs.query(
                 {
                     groupId: group.id
