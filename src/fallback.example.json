@@ -1,0 +1,12 @@
+{
+  "valwind": {
+    "tabs": [
+      "https://localhost:4200"
+    ]
+  },
+  "default": {
+    "tabs": [
+      "https://github.com/"
+    ]
+  }
+}

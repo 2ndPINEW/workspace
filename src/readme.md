@@ -1,0 +1,2 @@
+tmuxのウィンドウとChromeのタブグループを同期するためのコードです
+fallback.example.jsonを参考にfallback.jsonを作る
