@@ -1,7 +1,7 @@
 
 function check() {
     fetch('http://localhost:9281/').then(async (res) => {
-        changeTabGroup(res)
+        await changeTabGroup(res)
     }).catch(e => {
         createNotification('通信エラー', e.toString())
     })
