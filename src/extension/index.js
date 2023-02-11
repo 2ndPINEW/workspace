@@ -30,7 +30,6 @@ async function changeTabGroup(groupName) {
     for await (const group of groups) {
         await chromeTabGroupsUpdate(group.id, { collapsed: true })
     }
-    await chromeTabGroupsMove(group.id, { index: 1 })
     await chromeTabGroupsUpdate(group.id, { collapsed: false })
     const tabsInGroup = await chromeTabsQuery({ groupId: group.id })
     const hasActiveTabInGroup = tabsInGroup.some(tab => tab.active === true)
@@ -38,7 +37,7 @@ async function changeTabGroup(groupName) {
         createNotification('タブグループの移動をキャンセルしました', `${groupName}内のタブをすでに開いています`)
     } else {
         createNotification('タブグループを移動しました', `${groupName}に移動しました`)
-        await chromeTabsUpdate(tabs[0].id, { active: true })
+        await chromeTabsUpdate(tabsInGroup[0].id, { active: true })
     }
 }
 
