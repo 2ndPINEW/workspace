@@ -50,9 +50,8 @@ function createNewTabGroup(groupName) {
         const tabs = json[groupName]?.tabs ?? json.default?.tabs ?? []
         const tabIds = []
         for await (const tab of tabs) {
-            tabIds.push((await chromeTabsCreate({
-                url: tab,
-            })).id)
+            const option = tab ? { url: tab } : {}
+            tabIds.push((await chromeTabsCreate(option)).id)
         }
         const groupId = await chromeTabsGroup({ tabIds })
         await chromeTabGroupsUpdate(groupId, { title: groupName })
