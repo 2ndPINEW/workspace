@@ -61,6 +61,18 @@ function createNewTabGroup(groupName) {
     })
 }
 
+async function createNewTabInActiveTabGroup() {
+    const groups = await chromeTabGroupsQuery({})
+    for await (const group of groups) {
+        const tabsInGroup = await chromeTabsQuery({ groupId: group.id })
+        const hasActiveTabInGroup = tabsInGroup.some(tab => tab.active === true)
+        if (hasActiveTabInGroup) {
+            const tab = await chromeTabsCreate({})
+            await chromeTabsGroup({ groupId: group.id, tabIds: [tab.id] })
+        }
+    }
+}
+
 /** ---------------------------------------------- */
 /** ChromeのAPIがコールバック地獄だからpromiseにする */
 /** ---------------------------------------------- */
@@ -168,3 +180,11 @@ check()
 chrome.windows.onFocusChanged.addListener(
     () => check()
 )
+
+chrome.commands.onCommand.addListener(async (command) => {
+    switch (command) {
+      case "createNewTabeInActiveTabGroup":
+        await createNewTabInActiveTabGroup()
+        break;
+    }
+  });
