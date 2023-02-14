@@ -41,6 +41,9 @@ async function changeTabGroup(groupName) {
     }
 }
 
+// 拡張機能がタブを作成している間はonCreatedでしてる処理が実行されないようにする
+let internalTabCreatingMode = false
+
 /**
  * 新しいタブグループを作成する
  */
@@ -49,27 +52,17 @@ function createNewTabGroup(groupName) {
         const json = await res.json()
         const tabs = json[groupName]?.tabs ?? json.default?.tabs ?? []
         const tabIds = []
+        internalTabCreatingMode = true
         for await (const tab of tabs) {
             const option = tab ? { url: tab } : {}
             tabIds.push((await chromeTabsCreate(option)).id)
         }
         const groupId = await chromeTabsGroup({ tabIds })
         await chromeTabGroupsUpdate(groupId, { title: groupName })
+        internalTabCreatingMode = false
     }).catch(e => {
         createNotification('通信エラー', e.toString())
     })
-}
-
-async function createNewTabInActiveTabGroup() {
-    const groups = await chromeTabGroupsQuery({})
-    for await (const group of groups) {
-        const tabsInGroup = await chromeTabsQuery({ groupId: group.id })
-        const hasActiveTabInGroup = tabsInGroup.some(tab => tab.active === true)
-        if (hasActiveTabInGroup) {
-            const tab = await chromeTabsCreate({})
-            await chromeTabsGroup({ groupId: group.id, tabIds: [tab.id] })
-        }
-    }
 }
 
 /** ---------------------------------------------- */
@@ -219,6 +212,7 @@ chrome.tabs.onActivated.addListener(
 // 新規タブを作った時に、今アクティブなタブグループの中に入れ込む
 chrome.tabs.onCreated.addListener(
     (tab) => {
+        if (internalTabCreatingMode) return
         chromeTabsGroup({ groupId: activeTabGroupId, tabIds: [tab.id] })
     }
 )
