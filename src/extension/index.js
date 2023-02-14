@@ -198,7 +198,6 @@ async function switchTmuxWindow (windowName) {
 check()
 chrome.windows.onFocusChanged.addListener(
     () => {
-        findActiveTabGrup()
         check()
     }
 )
