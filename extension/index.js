@@ -136,16 +136,6 @@ function chromeTabGroupsUpdate(groupId, option) {
 }
 
 /**
- * タブグループを移動する
- * https://developer.chrome.com/docs/extensions/reference/tabGroups/#method-move
- */
-function chromeTabGroupsMove(groupId, option) {
-    return new Promise((resolve) => {
-        chrome.tabGroups.move(groupId, option, (group) => resolve(group))
-    })
-}
-
-/**
  * タブグループを探す
  * https://developer.chrome.com/docs/extensions/reference/tabGroups/#method-query
  */
