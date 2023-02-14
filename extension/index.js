@@ -180,22 +180,8 @@ async function findActiveTabGrup() {
         const hasActiveTabInGroup = tabsInGroup.some(tab => tab.active === true)
         if (hasActiveTabInGroup) {
             activeTabGroupId = group.id
-            await switchTmuxWindow(group.title)
         }
     }
-}
-
-// tmux側のウィンドウを選択中のタブグループの名前と一致するものに切り替える
-async function switchTmuxWindow (windowName) {
-    const headers = new Headers()
-    headers.append('Content-Type', 'application/json')
-    await fetch(`${API_BASE}switch`, {
-        method: 'POST',
-        body:  JSON.stringify({
-            "window_name": windowName
-        }),
-        headers
-    })
 }
 
 check()

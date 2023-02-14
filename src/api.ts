@@ -41,16 +41,6 @@ router.get("/fallback", (ctx: RouterContext) => {
   ctx.response.body = fallback;
 });
 
-router.post("/switch", async (ctx: RouterContext) => {
-  const body = await ctx.request.body();
-  const json = await body.value;
-  const windowName = json.window_name;
-  if (windowName) {
-    Deno.run({ cmd: ["tmux", "selectw", "-t", windowName] });
-  }
-  ctx.response.body = "";
-});
-
 app.use(oakCors());
 app.use(router.routes());
 app.use(router.allowedMethods());
