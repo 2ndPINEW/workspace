@@ -1,6 +1,9 @@
 const API_BASE = 'http://localhost:9281/'
 let recentWindowName = ''
 
+// 拡張機能がタブを作成している間はonCreatedでしてる処理が実行されないようにする
+let internalTabCreatingModeStartUnixTimeMs = 0
+
 function check() {
     fetch(`${API_BASE}active`).then(async (res) => {
         const json = await res.json()
@@ -41,9 +44,6 @@ async function changeTabGroup(groupName) {
     }
 }
 
-// 拡張機能がタブを作成している間はonCreatedでしてる処理が実行されないようにする
-let internalTabCreatingModeStartUnixTimeMs = 0
-
 /**
  * 新しいタブグループを作成する
  */
@@ -52,7 +52,6 @@ function createNewTabGroup(groupName) {
         const json = await res.json()
         const tabs = json[groupName]?.tabs ?? json.default?.tabs ?? []
         const tabIds = []
-        internalTabCreatingModeStartUnixTimeMs = Date.now()
         const groups = await chromeTabGroupsQuery({})
         for await (const group of groups) {
             await chromeTabGroupsUpdate(group.id, { collapsed: true })
@@ -77,6 +76,7 @@ function createNewTabGroup(groupName) {
  * https://developer.chrome.com/docs/extensions/reference/tabs/#method-create
  */
 function chromeTabsCreate(option) {
+    internalTabCreatingModeStartUnixTimeMs = Date.now()
     return new Promise((resolve, _) => {
         chrome.tabs.create(
             option,
@@ -199,7 +199,7 @@ chrome.tabs.onActivated.addListener(
 )
 
 chrome.tabs.onRemoved.addListener(
-  () => findActiveTabGrup()
+    () => findActiveTabGrup()
 )
 
 // 新規タブを作った時に、今アクティブなタブグループの中に入れ込む
@@ -210,3 +210,23 @@ chrome.tabs.onCreated.addListener(
         }
     }
 )
+
+async function createNewTabInActiveTabGroup() {
+    const groups = await chromeTabGroupsQuery({})
+    for await (const group of groups) {
+        const tabsInGroup = await chromeTabsQuery({ groupId: group.id })
+        const hasActiveTabInGroup = tabsInGroup.some(tab => tab.active === true)
+        if (hasActiveTabInGroup) {
+            const tab = await chromeTabsCreate({})
+            await chromeTabsGroup({ groupId: group.id, tabIds: [tab.id] })
+        }
+    }
+}
+
+chrome.commands.onCommand.addListener(async (command) => {
+    switch (command) {
+        case "createNewTabeInActiveTabGroup":
+            await createNewTabInActiveTabGroup()
+            break;
+    }
+});

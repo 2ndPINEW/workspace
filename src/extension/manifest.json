@@ -10,5 +10,14 @@
     "tabGroups",
     "tabs",
     "notifications"
-  ]
+  ],
+  "commands": {
+    "createNewTabeInActiveTabGroup": {
+      "suggested_key": {
+        "default": "Ctrl+K",
+        "mac": "Command+K"
+      },
+      "description": "タブグループ内に新規タブを開きます"
+    }
+  }
 }
