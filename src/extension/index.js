@@ -24,7 +24,7 @@ async function changeTabGroup(groupName) {
     const group = groups.find(group => group.title === groupName)
     if (!group) {
         createNewTabGroup(groupName)
-        createNotification('タブグループ', `${groupName}を作成しました`)
+        // createNotification('タブグループ', `${groupName}を作成しました`)
         return
     }
     for await (const group of groups) {
@@ -34,9 +34,9 @@ async function changeTabGroup(groupName) {
     const tabsInGroup = await chromeTabsQuery({ groupId: group.id })
     const hasActiveTabInGroup = tabsInGroup.some(tab => tab.active === true)
     if (hasActiveTabInGroup) {
-        createNotification('タブグループの移動をキャンセルしました', `${groupName}内のタブをすでに開いています`)
+        // createNotification('タブグループの移動をキャンセルしました', `${groupName}内のタブをすでに開いています`)
     } else {
-        createNotification('タブグループを移動しました', `${groupName}に移動しました`)
+        // createNotification('タブグループを移動しました', `${groupName}に移動しました`)
         await chromeTabsUpdate(tabsInGroup[0].id, { active: true })
     }
 }
