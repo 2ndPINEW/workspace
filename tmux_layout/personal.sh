@@ -20,9 +20,10 @@ WORKSPACE_NAME=(
 )
 
 
+
 # ワークスペースのパス
 WORKSPACE_PATH=(
-  /Users/takaseeito/.config/tmux
+  /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../../../../.config/tmux
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../astro
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../blog
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/.
@@ -33,6 +34,7 @@ WORKSPACE_PATH=(
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../../FukeKazki/raycast-scripts
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../blog-front
 )
+
 
 
 # 同じレイアウトで複数のワークスペースを作成
