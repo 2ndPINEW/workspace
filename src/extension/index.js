@@ -204,29 +204,10 @@ chrome.tabs.onRemoved.addListener(
 
 // 新規タブを作った時に、今アクティブなタブグループの中に入れ込む
 chrome.tabs.onCreated.addListener(
-    (tab) => {
+    async (tab) => {
         if (Date.now() - internalTabCreatingModeStartUnixTimeMs > 500) {
-            chromeTabsGroup({ groupId: activeTabGroupId, tabIds: [tab.id] })
+            const groupId = activeTabGroupId || (await chromeTabGroupsQuery({ collapsed: false }))[0].id
+            chromeTabsGroup({ groupId, tabIds: [tab.id] })
         }
     }
 )
-
-async function createNewTabInActiveTabGroup() {
-    const groups = await chromeTabGroupsQuery({})
-    for await (const group of groups) {
-        const tabsInGroup = await chromeTabsQuery({ groupId: group.id })
-        const hasActiveTabInGroup = tabsInGroup.some(tab => tab.active === true)
-        if (hasActiveTabInGroup) {
-            const tab = await chromeTabsCreate({})
-            await chromeTabsGroup({ groupId: group.id, tabIds: [tab.id] })
-        }
-    }
-}
-
-chrome.commands.onCommand.addListener(async (command) => {
-    switch (command) {
-        case "createNewTabeInActiveTabGroup":
-            await createNewTabInActiveTabGroup()
-            break;
-    }
-});
