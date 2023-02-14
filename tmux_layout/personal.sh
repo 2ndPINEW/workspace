@@ -49,7 +49,7 @@ for ((I=1; I<=$WORKSPACE_COUNT; I++)); do
   fi
 
   if [ $WORKSPACE_NAME[$I] = 'workspace' ]; then
-    tmux send-keys 'deno run -A src/api.ts' Enter
+    tmux send-keys 'deno task serve' Enter
   fi
   
   # ウィンドウの名前を変更
