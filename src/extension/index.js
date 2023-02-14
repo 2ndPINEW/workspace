@@ -80,7 +80,7 @@ async function createNewTabInActiveTabGroup() {
  * タブを作る
  * https://developer.chrome.com/docs/extensions/reference/tabs/#method-create
  */
-function chromeTabsCreate (option) {
+function chromeTabsCreate(option) {
     return new Promise((resolve, _) => {
         chrome.tabs.create(
             option,
@@ -94,7 +94,7 @@ function chromeTabsCreate (option) {
  * タブを探す
  * https://developer.chrome.com/docs/extensions/reference/tabs/#method-query
  */
-function chromeTabsQuery (option) {
+function chromeTabsQuery(option) {
     return new Promise((resolve) => {
         chrome.tabs.query(option, (tabs) => resolve(tabs))
     })
@@ -104,7 +104,7 @@ function chromeTabsQuery (option) {
  * タブを操作する
  * https://developer.chrome.com/docs/extensions/reference/tabs/#method-update
  */
-function chromeTabsUpdate (tabId, option) {
+function chromeTabsUpdate(tabId, option) {
     return new Promise((resolve) => {
         chrome.tabs.update(tabId, option, (tabs) => resolve(tabs))
     })
@@ -114,7 +114,7 @@ function chromeTabsUpdate (tabId, option) {
  * タブをグループにする
  * https://developer.chrome.com/docs/extensions/reference/tabs/#method-group
  */
-function chromeTabsGroup (option) {
+function chromeTabsGroup(option) {
     return new Promise((resolve) => {
         chrome.tabs.group(
             option,
@@ -129,7 +129,7 @@ function chromeTabsGroup (option) {
  * タブグループを更新する
  * https://developer.chrome.com/docs/extensions/reference/tabGroups/#method-update
  */
-function chromeTabGroupsUpdate (groupId, option) {
+function chromeTabGroupsUpdate(groupId, option) {
     return new Promise((resolve) => {
         chrome.tabGroups.update(
             groupId,
@@ -153,7 +153,7 @@ function chromeTabGroupsMove(groupId, option) {
  * タブグループを探す
  * https://developer.chrome.com/docs/extensions/reference/tabGroups/#method-query
  */
-function chromeTabGroupsQuery (option) {
+function chromeTabGroupsQuery(option) {
     return new Promise((resolve) => {
         chrome.tabGroups.query(option, (groups) => resolve(groups))
     })
@@ -175,15 +175,36 @@ function createNotification(title, message) {
     });
 }
 
+// アクティブなタブグループのIDを保持しておく
+let activeTabGroupId = ''
+async function findActiveTabGrup() {
+    const groups = await chromeTabGroupsQuery({})
+    for await (const group of groups) {
+        const tabsInGroup = await chromeTabsQuery({ groupId: group.id })
+        const hasActiveTabInGroup = tabsInGroup.some(tab => tab.active === true)
+        if (hasActiveTabInGroup) {
+            activeTabGroupId = group.id
+        }
+    }
+}
+
 check()
 chrome.windows.onFocusChanged.addListener(
-    () => check()
+    () => {
+        findActiveTabGrup()
+        check()
+    }
 )
 
-chrome.commands.onCommand.addListener(async (command) => {
-    switch (command) {
-      case "createNewTabeInActiveTabGroup":
-        await createNewTabInActiveTabGroup()
-        break;
+chrome.tabs.onActivated.addListener(
+    () => {
+        findActiveTabGrup()
     }
-  });
+)
+
+// 新規タブを作った時に、今アクティブなタブグループの中に入れ込む
+chrome.tabs.onCreated.addListener(
+    (tab) => {
+        chromeTabsGroup({ groupId: activeTabGroupId, tabIds: [tab.id] })
+    }
+)
