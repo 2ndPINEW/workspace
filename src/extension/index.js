@@ -206,9 +206,11 @@ chrome.windows.onFocusChanged.addListener(
 )
 
 chrome.tabs.onActivated.addListener(
-    () => {
-        findActiveTabGrup()
-    }
+    () => findActiveTabGrup()
+)
+
+chrome.tabs.onRemoved.addListener(
+  () => findActiveTabGrup()
 )
 
 // 新規タブを作った時に、今アクティブなタブグループの中に入れ込む
