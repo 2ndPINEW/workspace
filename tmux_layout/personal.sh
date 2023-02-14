@@ -3,7 +3,7 @@
 SESSION_NAME=personal
 
 # ワークスペースの数
-WORKSPACE_COUNT=10
+WORKSPACE_COUNT=11
 
 # ワークスペース(タブ)の名前
 WORKSPACE_NAME=(
@@ -15,9 +15,11 @@ WORKSPACE_NAME=(
   skill
   hiragana
   valwind
+  blog-api
   raycast
   blog-front
 )
+
 
 
 
@@ -31,9 +33,11 @@ WORKSPACE_PATH=(
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../skill
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../HiraganaParser
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../../KOSENation/valwind
+  /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../blog-api
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../../FukeKazki/raycast-scripts
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../blog-front
 )
+
 
 
 
