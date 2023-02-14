@@ -45,6 +45,11 @@ for ((I=1; I<=$WORKSPACE_COUNT; I++)); do
     # 以降のワークスペースはウィンドウを作成
     tmux new-window -c $WORKSPACE_PATH[$I]
   fi
+
+  if [ $WORKSPACE_NAME[$I] = 'workspace' ]; then
+    tmux send-keys 'deno run -A src/api.ts' Enter
+  fi
+  
   # ウィンドウの名前を変更
   tmux rename-window "$WORKSPACE_NAME[$I]"
   # 縦 50% の位置で分割
