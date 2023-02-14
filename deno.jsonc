@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "strict": true
+  },
+  "lint": {
+    "files": {
+      "include": ["src/"]
+    }
+  },
+  "fmt": {
+    "files": {
+      "include": ["src/"]
+    }
+  },
+  "tasks": {
+    "serve": "deno run --allow-net --allow-run --allow-read=. ./src/api.ts"
+  }
+}
