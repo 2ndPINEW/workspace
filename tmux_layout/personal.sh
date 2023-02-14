@@ -3,31 +3,37 @@
 SESSION_NAME=personal
 
 # ワークスペースの数
-WORKSPACE_COUNT=8
+WORKSPACE_COUNT=10
 
 # ワークスペース(タブ)の名前
 WORKSPACE_NAME=(
-  blog
-  blog-front
-  skill
+  tmux
   astro
-  raycast
+  blog
+  workspace
+  workspace-switcher
+  skill
   hiragana
   valwind
-  workspace
+  raycast
+  blog-front
 )
+
 
 # ワークスペースのパス
 WORKSPACE_PATH=(
-  ~/dev/github.com/2ndPINEW/blog
-  ~/dev/github.com/2ndPINEW/blog-front
-  ~/dev/github.com/2ndPINEW/skill
-  ~/dev/github.com/2ndPINEW/astro
-  ~/dev/github.com/FukeKazki/raycast-scripts
-  ~/dev/github.com/FukeKazki/HiraganaParser
-  ~/dev/github.com/KOSENation/valwind
-  ~/dev/github.com/2ndPINEW/workspace
+  /Users/takaseeito/.config/tmux
+  /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../astro
+  /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../blog
+  /Users/takaseeito/dev/github.com/2ndPINEW/workspace/.
+  /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../vscode-workspace-switcher-with-terminal
+  /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../skill
+  /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../HiraganaParser
+  /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../../KOSENation/valwind
+  /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../../FukeKazki/raycast-scripts
+  /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../blog-front
 )
+
 
 # 同じレイアウトで複数のワークスペースを作成
 # 同じレイアウトで複数のワークスペースを作成
