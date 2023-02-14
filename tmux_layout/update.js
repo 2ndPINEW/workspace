@@ -12,7 +12,7 @@ const fnsh = "./tmux_layout/personal.sh";
 const sh = await Deno.readTextFile(fnsh);
 
 function makeAbsolutePath (path) {
-  return path.startsWith('/Users') ? path: `${Deno.cwd()}/${path}`
+  return path.startsWith('/Users') || path.startsWith('~/') ? path: `${Deno.cwd()}/${path}`
 }
 
 const sh2 = sh.replace(/WORKSPACE_COUNT=(\d+)/, "WORKSPACE_COUNT=" + files.length);
