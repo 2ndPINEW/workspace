@@ -11,7 +11,11 @@ for await (const f of Deno.readDir(path)) {
 const fnsh = "./tmux_layout/personal.sh";
 const sh = await Deno.readTextFile(fnsh);
 
+function makeAbsolutePath (path) {
+  return path.startsWith('/Users') ? path: `${Deno.cwd()}/${path}`
+}
+
 const sh2 = sh.replace(/WORKSPACE_COUNT=(\d+)/, "WORKSPACE_COUNT=" + files.length);
 const sh3 = sh2.replace(/WORKSPACE_NAME=\([^\)]+\)/, "WORKSPACE_NAME=(\n" + files.map(f => "  " + f.name).join("\n") + "\n)\n");
-const sh4 = sh3.replace(/WORKSPACE_PATH=\([^\)]+\)/, "WORKSPACE_PATH=(\n" + files.map(f => "  " + `${Deno.cwd()}/${f.path}`).join("\n") + "\n)\n");
+const sh4 = sh3.replace(/WORKSPACE_PATH=\([^\)]+\)/, "WORKSPACE_PATH=(\n" + files.map(f => "  " + makeAbsolutePath(f.path)).join("\n") + "\n)\n");
 await Deno.writeTextFile(fnsh, sh4);
