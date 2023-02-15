@@ -6,23 +6,6 @@ if [ $# != 2 ]; then
 	exit 1
 fi
 
-cd ~/dev/github.com/2ndPINEW/workspace
-
-if [ ! -e $2 ]; then
-	echo パスが存在しません
-  exit 1
-fi
-
-echo "{
-	\"folders\": [
-		{
-			\"path\": \"$2\"
-		}
-	],
-	\"settings\": {}
-}
-" > $1.code-workspace
-
 # ウィンドウを作成する
 tmux new-window -c $2
 # ウィンドウの名前を変更
@@ -34,5 +17,3 @@ tmux split-window -h -p 50 -c "#{pane_current_path}"
 tmux select-pane -t 0
 # tmux split-window -h -p 50 -c "#{pane_current_path}"
 # tmux select-pane -t 0
-
-echo "起動時のシェルは自分で追加してください"
