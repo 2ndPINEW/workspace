@@ -1,7 +1,7 @@
 import { parse } from "https://deno.land/std@0.66.0/flags/mod.ts";
 import { update } from './update.ts'
 
-// deno run init.ts -g git@github.com
+// deno run init.ts -g git@github.com -n hoge
 // deno run init.ts -l ~/dev
 
 // git@github.com:2ndPINEW/hoge.git
