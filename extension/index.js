@@ -23,7 +23,7 @@ function check() {
 }
 
 async function changeTabGroup(groupName) {
-    const groups = await chromeTabGroupsQuery({})
+    const groups = await chrome.tabGroups.query({})
     const group = groups.find(group => group.title === groupName)
     if (!group) {
         createNewTabGroup(groupName)
@@ -31,16 +31,13 @@ async function changeTabGroup(groupName) {
         return
     }
     for await (const group of groups) {
-        await chromeTabGroupsUpdate(group.id, { collapsed: true })
+        await chrome.tabGroups.update(group.id, { collapsed: true })
     }
-    await chromeTabGroupsUpdate(group.id, { collapsed: false })
-    const tabsInGroup = await chromeTabsQuery({ groupId: group.id })
+    await chrome.tabGroups.update(group.id, { collapsed: false })
+    const tabsInGroup = await chrome.tabs.query({ groupId: group.id })
     const hasActiveTabInGroup = tabsInGroup.some(tab => tab.active === true)
-    if (hasActiveTabInGroup) {
-        // createNotification('タブグループの移動をキャンセルしました', `${groupName}内のタブをすでに開いています`)
-    } else {
-        // createNotification('タブグループを移動しました', `${groupName}に移動しました`)
-        await chromeTabsUpdate(tabsInGroup[0].id, { active: true })
+    if (!hasActiveTabInGroup) {
+        await chrome.tabs.update(tabsInGroup[0].id, { active: true })
     }
 }
 
@@ -52,96 +49,19 @@ function createNewTabGroup(groupName) {
         const json = await res.json()
         const tabs = json[groupName]?.tabs ?? json.default?.tabs ?? []
         const tabIds = []
-        const groups = await chromeTabGroupsQuery({})
+        const groups = await chrome.tabGroups.query({})
         for await (const group of groups) {
-            await chromeTabGroupsUpdate(group.id, { collapsed: true })
+            await chrome.tabGroups.update(group.id, { collapsed: true })
         }
         for await (const tab of tabs) {
             const option = tab ? { url: tab } : {}
-            tabIds.push((await chromeTabsCreate(option)).id)
+            internalTabCreatingModeStartUnixTimeMs = Date.now()
+            tabIds.push((await chrome.tabs.create(option)).id)
         }
-        const groupId = await chromeTabsGroup({ tabIds })
-        await chromeTabGroupsUpdate(groupId, { title: groupName })
+        const groupId = await chrome.tabs.group({ tabIds })
+        await chrome.tabGroups.update(groupId, { title: groupName })
     }).catch(e => {
         createNotification('通信エラー', e.toString())
-    })
-}
-
-/** ---------------------------------------------- */
-/** ChromeのAPIがコールバック地獄だからpromiseにする */
-/** ---------------------------------------------- */
-
-/**
- * タブを作る
- * https://developer.chrome.com/docs/extensions/reference/tabs/#method-create
- */
-function chromeTabsCreate(option) {
-    internalTabCreatingModeStartUnixTimeMs = Date.now()
-    return new Promise((resolve, _) => {
-        chrome.tabs.create(
-            option,
-            (tab) => {
-                resolve(tab)
-            })
-    });
-}
-
-/**
- * タブを探す
- * https://developer.chrome.com/docs/extensions/reference/tabs/#method-query
- */
-function chromeTabsQuery(option) {
-    return new Promise((resolve) => {
-        chrome.tabs.query(option, (tabs) => resolve(tabs))
-    })
-}
-
-/**
- * タブを操作する
- * https://developer.chrome.com/docs/extensions/reference/tabs/#method-update
- */
-function chromeTabsUpdate(tabId, option) {
-    return new Promise((resolve) => {
-        chrome.tabs.update(tabId, option, (tabs) => resolve(tabs))
-    })
-}
-
-/**
- * タブをグループにする
- * https://developer.chrome.com/docs/extensions/reference/tabs/#method-group
- */
-function chromeTabsGroup(option) {
-    return new Promise((resolve) => {
-        chrome.tabs.group(
-            option,
-            (groupId) => {
-                resolve(groupId)
-            }
-        )
-    })
-}
-
-/**
- * タブグループを更新する
- * https://developer.chrome.com/docs/extensions/reference/tabGroups/#method-update
- */
-function chromeTabGroupsUpdate(groupId, option) {
-    return new Promise((resolve) => {
-        chrome.tabGroups.update(
-            groupId,
-            option,
-            (group) => resolve(group)
-        )
-    })
-}
-
-/**
- * タブグループを探す
- * https://developer.chrome.com/docs/extensions/reference/tabGroups/#method-query
- */
-function chromeTabGroupsQuery(option) {
-    return new Promise((resolve) => {
-        chrome.tabGroups.query(option, (groups) => resolve(groups))
     })
 }
 
@@ -164,9 +84,9 @@ function createNotification(title, message) {
 // アクティブなタブグループのIDを保持しておく
 let activeTabGroupId = ''
 async function findActiveTabGrup() {
-    const groups = await chromeTabGroupsQuery({})
+    const groups = await chrome.tabGroups.query({})
     for await (const group of groups) {
-        const tabsInGroup = await chromeTabsQuery({ groupId: group.id })
+        const tabsInGroup = await chrome.tabs.query({ groupId: group.id })
         const hasActiveTabInGroup = tabsInGroup.some(tab => tab.active === true)
         if (hasActiveTabInGroup) {
             activeTabGroupId = group.id
@@ -196,8 +116,8 @@ chrome.tabs.onRemoved.addListener(
 chrome.tabs.onCreated.addListener(
     async (tab) => {
         if (Date.now() - internalTabCreatingModeStartUnixTimeMs > 500) {
-            const groupId = activeTabGroupId || (await chromeTabGroupsQuery({ collapsed: false }))[0].id
-            chromeTabsGroup({ groupId, tabIds: [tab.id] })
+            const groupId = activeTabGroupId || (await chrome.tabGroups.query({ collapsed: false }))[0].id
+            chrome.tabs.group({ groupId, tabIds: [tab.id] })
         }
     }
 )
