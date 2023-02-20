@@ -3,7 +3,7 @@
 SESSION_NAME=personal
 
 # ワークスペースの数
-WORKSPACE_COUNT=12
+WORKSPACE_COUNT=13
 
 # ワークスペース(タブ)の名前
 WORKSPACE_NAME=(
@@ -14,6 +14,7 @@ WORKSPACE_NAME=(
   workspace-switcher
   skill
   hiragana
+  warikan
   valwind
   blog-api
   blog-ogp
@@ -30,6 +31,7 @@ WORKSPACE_PATH=(
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../vscode-workspace-switcher-with-terminal
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../skill
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../HiraganaParser
+  /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../../../github.com/2ndPINEW/warikan
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../../KOSENation/valwind
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../blog-api
   /Users/takaseeito/dev/github.com/2ndPINEW/workspace/../blog-ogp
