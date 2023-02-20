@@ -23,6 +23,18 @@ function check() {
 }
 
 async function changeTabGroup(groupName) {
+    // 名前がfreeのタブグループがアクティブな場合は何もしないための処理
+    const freeGroups = await chrome.tabGroups.query({ collapsed: false, title: 'free' })
+    let hasActiveTabInFreeGroup = false
+    for await (const freeGroup of freeGroups) {
+        const tabsInFreeGroup = await chrome.tabs.query({ groupId: freeGroup.id })
+        if (tabsInFreeGroup.some(tab => tab.active === true)) {
+            hasActiveTabInFreeGroup = true
+        }
+    }
+    if (hasActiveTabInFreeGroup) {
+        return
+    }
     const groups = await chrome.tabGroups.query({})
     const group = groups.find(group => group.title === groupName)
     if (!group) {
