@@ -1,10 +1,31 @@
+// 書き捨てだからJSでいいやって思ったけど辛くね
+// 1ファイルJSの綺麗な書き方わからん
+
 const API_BASE = 'http://localhost:9281/'
-let recentTmuxWindowName = ''
 
 /** FREE or MANAGE */
 let mode = 'MANAGE'
 
 let session = {}
+
+function switchMode () {
+    mode = mode === 'MANAGE' ? 'FREE' : 'MANAGE'
+    findActiveTmuxWindow()
+
+    if (mode === 'FREE') {
+        createNotification('フリーモード', '')
+    } else {
+        createNotification('管理モード', '')
+    }
+}
+
+chrome.commands.onCommand.addListener((command) => {
+    switch (command) {
+        case "switchMode":
+            switchMode()
+            break;
+    }
+});
 
 // セッションに必要なタブを復元する
 async function restoreSession (sessionName) {
@@ -68,10 +89,6 @@ function findActiveTmuxWindow() {
             createNotification('エラー', 'アクティブなtmuxセッションまたはウィンドウが見つかりません')
             return
         }
-        if (tmuxWindowName === recentTmuxWindowName) {
-            return
-        }
-        recentTmuxWindowName = tmuxWindowName
         afterTmuxWindowCheckFunc(tmuxWindowName)
     }).catch(e => {
         createNotification('通信エラー', e.toString())
@@ -79,8 +96,11 @@ function findActiveTmuxWindow() {
 }
 
 function afterTmuxWindowCheckFunc (tmuxWindowName) {
-    if (mode === 'free') {
-        createNotification('afterTmuxWindowCheckFunc', 'モードがフリー')
+    if (mode === 'FREE' && session.name !== 'free') {
+        restoreSession('free')
+        return
+    }
+    if (mode === 'FREE' && session.name === 'free') {
         return
     }
     if (session.name === tmuxWindowName) {
@@ -104,12 +124,11 @@ function createNotification(title, message) {
     });
 }
 
-chrome.windows.onFocusChanged.addListener(
-    () => {
-        findActiveTmuxWindow()
-    }
-)
+findActiveTmuxWindow()
 
+chrome.windows.onFocusChanged.addListener(
+    () => findActiveTmuxWindow()
+)
 
 chrome.tabs.onActivated.addListener(
     () => saveCurrentSesion()

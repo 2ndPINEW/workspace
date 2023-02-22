@@ -10,5 +10,14 @@
     "tabGroups",
     "tabs",
     "notifications"
-  ]
+  ],
+  "commands": {
+    "switchMode": {
+      "suggested_key": {
+        "default": "Ctrl+K",
+        "mac": "Command+K"
+      },
+      "description": "モード切り替える"
+    }
+  }
 }
