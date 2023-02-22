@@ -13,9 +13,9 @@ function switchMode () {
     findActiveTmuxWindow()
 
     if (mode === 'FREE') {
-        createNotification('フリーモード', '')
+        createNotification('フリーモード', 'セッションは管理されていません')
     } else {
-        createNotification('管理モード', '')
+        createNotification('管理モード', 'セッションを管理しています')
     }
 }
 
@@ -35,7 +35,24 @@ async function restoreSession (sessionName) {
         createNewSession(sessionName)
         return
     }
-    session = await res.json()
+    const json = await res.json()
+
+    // 次のセッションと今開いているセッションの内容が同じ場合
+    // 内部で保持してるオブジェクトだけ更新する
+    if (session.tabs?.length === json.tabs.length) {
+        let isSame = true
+        session.tabs.forEach((tab, i) => {
+            if (tab.url !== json.tabs[i].url) {
+                isSame = false
+            }
+        })
+        if (isSame) {
+            session = json
+            return
+        }
+    }
+
+    session = json
     syncSessionTabs()
 }
 
