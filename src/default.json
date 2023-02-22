@@ -25,6 +25,13 @@
       }
     ]
   },
+  "blog-ogp": {
+    "tabs": [
+      {
+        "url": "http://localhost:3010"
+      }
+    ]
+  },
   "skill": {
     "tabs": [
       {
