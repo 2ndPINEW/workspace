@@ -1,8 +1,8 @@
 {
-  "name": "TabGroupManager",
+  "name": "TabSessionManager",
   "version": "1.0.0",
   "manifest_version": 3,
-  "description": "タブグループ管理",
+  "description": "タブセッション管理",
   "background": {
     "service_worker": "index.js"
   },
