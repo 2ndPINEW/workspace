@@ -4,7 +4,7 @@ import {
   RouterContext,
 } from "https://deno.land/x/oak@v6.5.0/mod.ts";
 import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
-import fallback from "./fallback.json" assert { type: "json" };
+import defaultSession from "./default.json" assert { type: "json" };
 
 const app = new Application();
 const router = new Router();
@@ -40,10 +40,6 @@ router.get("/active", async (ctx: RouterContext) => {
   };
 });
 
-router.get("/fallback", (ctx: RouterContext) => {
-  ctx.response.body = fallback;
-});
-
 router.get("/sessions/:sessionName", (ctx: RouterContext) => {
   const sessionName = ctx.params.sessionName
   if (!sessionName) {
@@ -51,7 +47,7 @@ router.get("/sessions/:sessionName", (ctx: RouterContext) => {
     ctx.response.body = 'need session name parameter'
     return
   }
-  const session = sessions[sessionName]
+  const session = sessions[sessionName] ?? defaultSession[sessionName]
   if (!session) {
     ctx.response.status = 404
     return
