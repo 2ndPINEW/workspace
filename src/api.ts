@@ -4,7 +4,6 @@ import {
   RouterContext,
 } from "https://deno.land/x/oak@v6.5.0/mod.ts";
 import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
-import defaultSession from "./default.json" assert { type: "json" };
 
 const app = new Application();
 const router = new Router();
@@ -36,21 +35,6 @@ router.get("/active", async (ctx: RouterContext) => {
     window_name: name,
   };
 });
-
-router.get("/sessions/:sessionName", (ctx: RouterContext) => {
-  const sessionName = ctx.params.sessionName
-  if (!sessionName) {
-    ctx.response.status = 500
-    ctx.response.body = 'need session name parameter'
-    return
-  }
-  const session = defaultSession[sessionName]
-  if (!session) {
-    ctx.response.status = 404
-    return
-  }
-  ctx.response.body = session
-})
 
 app.use(oakCors());
 app.use(router.routes());
