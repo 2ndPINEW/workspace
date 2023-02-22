@@ -9,7 +9,9 @@
   "permissions": [
     "tabGroups",
     "tabs",
-    "notifications"
+    "notifications",
+    "unlimitedStorage",
+    "storage"
   ],
   "commands": {
     "switchMode": {

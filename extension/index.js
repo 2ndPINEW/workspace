@@ -30,29 +30,28 @@ chrome.commands.onCommand.addListener((command) => {
 // セッションに必要なタブを復元する
 async function restoreSession (sessionName) {
     await saveCurrentSesion()
-    const res = await fetch(`${API_BASE}sessions/${sessionName}`)
-    if (res.status === 404) {
+    const nextSession = (await chrome.storage.local.get(sessionName))[sessionName]
+    if (!nextSession) {
         createNewSession(sessionName)
         return
     }
-    const json = await res.json()
 
     // 次のセッションと今開いているセッションの内容が同じ場合
     // 内部で保持してるオブジェクトだけ更新する
-    if (session.tabs?.length === json.tabs.length) {
+    if (session.tabs?.length === nextSession.tabs.length) {
         let isSame = true
         session.tabs.forEach((tab, i) => {
-            if (tab.url !== json.tabs[i].url) {
+            if (tab.url !== nextSession.tabs[i].url) {
                 isSame = false
             }
         })
         if (isSame) {
-            session = json
+            session = nextSession
             return
         }
     }
 
-    session = json
+    session = nextSession
     syncSessionTabs()
 }
 
@@ -88,14 +87,7 @@ async function saveCurrentSesion () {
     }
 
     session.tabs = await chrome.tabs.query({})
-
-    const headers = new Headers()
-    headers.append('Content-Type', 'application/json')
-    await fetch(`${API_BASE}sessions/${session.name}`, {
-        method: 'POST',
-        body:  JSON.stringify(session),
-        headers
-    })
+    await chrome.storage.local.set({ [session.name]: session })
 }
 
 function findActiveTmuxWindow() {
@@ -161,4 +153,4 @@ chrome.tabs.onCreated.addListener(
 
 chrome.tabs.onUpdated.addListener(
     () => saveCurrentSesion()
-  )
+)

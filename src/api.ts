@@ -9,9 +9,6 @@ import defaultSession from "./default.json" assert { type: "json" };
 const app = new Application();
 const router = new Router();
 
-// deno-lint-ignore no-explicit-any
-const sessions: { [key: string]: any } = {}
-
 app.addEventListener("listen", ({ hostname, port, secure }) => {
   console.log(
     `Listening on: ${secure ? "https://" : "http://"}${
@@ -47,25 +44,12 @@ router.get("/sessions/:sessionName", (ctx: RouterContext) => {
     ctx.response.body = 'need session name parameter'
     return
   }
-  const session = sessions[sessionName] ?? defaultSession[sessionName]
+  const session = defaultSession[sessionName]
   if (!session) {
     ctx.response.status = 404
     return
   }
   ctx.response.body = session
-})
-
-router.post("/sessions/:sessionName", async (ctx: RouterContext) => {
-  const sessionName = ctx.params.sessionName
-  if (!sessionName) {
-    ctx.response.status = 500
-    ctx.response.body = 'need session name parameter'
-    return
-  }
-  const body = ctx.request.body();
-  const json = await body.value;
-  sessions[sessionName] = json
-  ctx.response.status = 200
 })
 
 app.use(oakCors());
