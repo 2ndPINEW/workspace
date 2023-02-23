@@ -1,2 +1,4 @@
 work.sh
 fallback.json
+
+*.code-workspace
