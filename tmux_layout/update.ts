@@ -9,7 +9,7 @@ export const update = async () => {
     }
   }
 
-  const fnsh = "./tmux_layout/personal.sh";
+  const fnsh = "./tmux_layout/workspace.conf";
   const sh = await Deno.readTextFile(fnsh);
 
   function makeAbsolutePath(path: string) {

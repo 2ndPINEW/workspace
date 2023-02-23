@@ -2,7 +2,7 @@
 # セッションの名前
 SESSION_NAME=personal
 
-source tmux_layout/workspace.txt
+source tmux_layout/workspace.conf
 
 # 同じレイアウトで複数のワークスペースを作成
 # 同じレイアウトで複数のワークスペースを作成
