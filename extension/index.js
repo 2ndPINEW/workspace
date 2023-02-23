@@ -14,8 +14,6 @@ function switchMode () {
 
     if (mode === 'FREE') {
         createNotification('フリーモード', 'セッションは管理されていません')
-    } else {
-        createNotification('管理モード', 'セッションを管理しています')
     }
 }
 
@@ -34,6 +32,10 @@ async function restoreSession (sessionName) {
     if (!nextSession) {
         createNewSession(sessionName)
         return
+    }
+
+    if (sessionName !== 'FREE') {
+        createNotification('セッション管理中', `${sessionName}を開きました`)
     }
 
     // 次のセッションと今開いているタブの内容が同じ場合
@@ -106,11 +108,11 @@ function findActiveTmuxWindow() {
 }
 
 function afterTmuxWindowCheckFunc (tmuxWindowName) {
-    if (mode === 'FREE' && session.name !== 'free') {
-        restoreSession('free')
+    if (mode === 'FREE' && session.name !== 'FREE') {
+        restoreSession('FREE')
         return
     }
-    if (mode === 'FREE' && session.name === 'free') {
+    if (mode === 'FREE' && session.name === 'FREE') {
         return
     }
     if (session.name === tmuxWindowName) {
