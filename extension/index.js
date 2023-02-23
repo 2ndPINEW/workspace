@@ -5,16 +5,22 @@ const API_BASE = 'http://localhost:9281/'
 const FREE_MODE_KEY = 'FREE'
 const MANAGE_MODE_KEY = 'MANAGE'
 
-/** FREE or MANAGE */
-let mode = MANAGE_MODE_KEY
-
 let session = {}
 
-function switchMode () {
-    mode = mode === MANAGE_MODE_KEY ? FREE_MODE_KEY : MANAGE_MODE_KEY
+async function setMode (mode) {
+    await chrome.storage.local.set({ mode })
+}
+
+async function getMode () {
+    return (await chrome.storage.local.get('mode'))['mode'] || MANAGE_MODE_KEY
+}
+
+async function switchMode () {
+    const mode = await getMode() === MANAGE_MODE_KEY ? FREE_MODE_KEY : MANAGE_MODE_KEY
+    await setMode(mode)
     findActiveTmuxWindow()
 
-    if (mode === FREE_MODE_KEY) {
+    if (await getMode() === FREE_MODE_KEY) {
         createNotification('フリーモード', 'セッションは管理されていません')
     }
 }
@@ -126,7 +132,8 @@ function findActiveTmuxWindow() {
     })
 }
 
-function afterTmuxWindowCheckFunc (tmuxWindowName) {
+async function afterTmuxWindowCheckFunc (tmuxWindowName) {
+    const mode = await getMode()
     if (mode === FREE_MODE_KEY && session.name !== FREE_MODE_KEY) {
         restoreSession(FREE_MODE_KEY)
         return
