@@ -36,11 +36,12 @@ async function restoreSession (sessionName) {
         return
     }
 
-    // 次のセッションと今開いているセッションの内容が同じ場合
+    // 次のセッションと今開いているタブの内容が同じ場合
     // 内部で保持してるオブジェクトだけ更新する
-    if (session.tabs?.length === nextSession.tabs.length) {
+    const tabs = await chrome.tabs.query({})
+    if (tabs?.length === nextSession.tabs.length) {
         let isSame = true
-        session.tabs.forEach((tab, i) => {
+        tabs.forEach((tab, i) => {
             if (tab.url !== nextSession.tabs[i].url) {
                 isSame = false
             }
