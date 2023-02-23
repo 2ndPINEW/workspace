@@ -5,14 +5,20 @@ const API_BASE = 'http://localhost:9281/'
 const FREE_MODE_KEY = 'FREE'
 const MANAGE_MODE_KEY = 'MANAGE'
 
-let session = {}
-
 async function setMode (mode) {
-    await chrome.storage.local.set({ mode })
+    await chrome.storage.local.set({ workspaceMode: mode })
 }
 
 async function getMode () {
-    return (await chrome.storage.local.get('mode'))['mode'] || MANAGE_MODE_KEY
+    return (await chrome.storage.local.get('workspaceMode'))['workspaceMode'] || MANAGE_MODE_KEY
+}
+
+async function setSession (session) {
+    await chrome.storage.local.set({ workspaceSession: session })
+}
+
+async function getSession () {
+    return (await chrome.storage.local.get('workspaceSession'))['workspaceSession'] || {}
 }
 
 async function switchMode () {
@@ -74,17 +80,17 @@ async function restoreSession (sessionName) {
             }
         })
         if (isSame) {
-            session = nextSession
+            await setSession(nextSession)
             return
         }
     }
 
-    session = nextSession
+    await setSession(nextSession)
     syncSessionTabs()
 }
 
 async function createNewSession (sessionName) {
-    session = {
+    setSession({
         name: sessionName,
         tabs: [
             {
@@ -92,13 +98,13 @@ async function createNewSession (sessionName) {
                 active: true
             }
         ]
-    }
+    })
     syncSessionTabs()
 }
 
 async function syncSessionTabs () {
     const oldTabs = await chrome.tabs.query({})
-    for await (let newTab of session.tabs) {
+    for await (let newTab of (await getSession()).tabs) {
         if (newTab.url) {
             await chrome.tabs.create({ url: newTab.url, active: newTab.active })
         } else {
@@ -110,6 +116,7 @@ async function syncSessionTabs () {
 }
 
 async function saveCurrentSesion () {
+    const session = await getSession()
     if (!session.name) {
         return
     }
@@ -134,6 +141,7 @@ function findActiveTmuxWindow() {
 
 async function afterTmuxWindowCheckFunc (tmuxWindowName) {
     const mode = await getMode()
+    const session = await getSession()
     if (mode === FREE_MODE_KEY && session.name !== FREE_MODE_KEY) {
         restoreSession(FREE_MODE_KEY)
         return
