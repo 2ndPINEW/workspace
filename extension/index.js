@@ -2,25 +2,44 @@
 // 1ファイルJSの綺麗な書き方わからん
 
 const API_BASE = 'http://localhost:9281/'
+const FREE_MODE_KEY = 'FREE'
+const MANAGE_MODE_KEY = 'MANAGE'
 
 /** FREE or MANAGE */
-let mode = 'MANAGE'
+let mode = MANAGE_MODE_KEY
 
 let session = {}
 
 function switchMode () {
-    mode = mode === 'MANAGE' ? 'FREE' : 'MANAGE'
+    mode = mode === MANAGE_MODE_KEY ? FREE_MODE_KEY : MANAGE_MODE_KEY
     findActiveTmuxWindow()
 
-    if (mode === 'FREE') {
+    if (mode === FREE_MODE_KEY) {
         createNotification('フリーモード', 'セッションは管理されていません')
     }
+}
+
+async function moveCurrentTabToFreeSession () {
+    const activeTabs = await chrome.tabs.query({ active: true })
+    const activeTabIds = activeTabs.map(tab => tab.id)
+    await chrome.tabs.remove(activeTabIds)
+    await saveCurrentSesion()
+
+    const freeSession = (await chrome.storage.local.get(FREE_MODE_KEY))[FREE_MODE_KEY]
+    activeTabs.forEach(tab => {
+        freeSession.tabs.push(tab)
+    })
+    await chrome.storage.local.set({ [freeSession.name]: freeSession })
+    createNotification('タブ移動', '選択中のタブをフリーセッションに移動しました')
 }
 
 chrome.commands.onCommand.addListener((command) => {
     switch (command) {
         case "switchMode":
             switchMode()
+            break;
+        case "tabMove":
+            moveCurrentTabToFreeSession()
             break;
     }
 });
@@ -34,7 +53,7 @@ async function restoreSession (sessionName) {
         return
     }
 
-    if (sessionName !== 'FREE') {
+    if (sessionName !== FREE_MODE_KEY) {
         createNotification('セッション管理中', `${sessionName}を開きました`)
     }
 
@@ -108,11 +127,11 @@ function findActiveTmuxWindow() {
 }
 
 function afterTmuxWindowCheckFunc (tmuxWindowName) {
-    if (mode === 'FREE' && session.name !== 'FREE') {
-        restoreSession('FREE')
+    if (mode === FREE_MODE_KEY && session.name !== FREE_MODE_KEY) {
+        restoreSession(FREE_MODE_KEY)
         return
     }
-    if (mode === 'FREE' && session.name === 'FREE') {
+    if (mode === FREE_MODE_KEY && session.name === FREE_MODE_KEY) {
         return
     }
     if (session.name === tmuxWindowName) {

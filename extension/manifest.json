@@ -20,6 +20,13 @@
         "mac": "Command+K"
       },
       "description": "モード切り替える"
+    },
+    "tabMove": {
+      "suggested_key": {
+        "default": "Ctrl+U",
+        "mac": "Command+U"
+      },
+      "description": "タブを移動する"
     }
   }
 }
