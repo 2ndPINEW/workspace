@@ -39,7 +39,7 @@ const main = async () => {
     await Deno.writeTextFile(`${name}.code-workspace`, codeWorkspace);
     await update()
 
-    const add = Deno.run({ cmd: ["zsh", "tmux_layout/add.sh", name, savePath], stdout: "piped" });
+    const add = Deno.run({ cmd: ["zsh", "tmux_layout/add_window.sh", name, savePath], stdout: "piped" });
     await add.status()
   }
 }
