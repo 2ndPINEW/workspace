@@ -16,15 +16,15 @@
   "commands": {
     "switchMode": {
       "suggested_key": {
-        "default": "Ctrl+K",
-        "mac": "Command+K"
+        "default": "Ctrl+M",
+        "mac": "Command+M"
       },
       "description": "モード切り替える"
     },
     "tabMove": {
       "suggested_key": {
-        "default": "Ctrl+U",
-        "mac": "Command+U"
+        "default": "Ctrl+I",
+        "mac": "Command+I"
       },
       "description": "タブをフリーセッションに移動する"
     }
