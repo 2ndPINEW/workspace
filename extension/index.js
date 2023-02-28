@@ -13,13 +13,24 @@ async function getMode () {
     return (await chrome.storage.local.get('workspaceMode'))['workspaceMode'] || MANAGE_MODE_KEY
 }
 
-async function setSession (session) {
+// FIXME: この辺のセッションの情報どこに入ってるのか分かりづらくね、なんこれ
+async function setCurrentSession (session) {
     await chrome.storage.local.set({ workspaceSession: session })
     await updateBadge()
 }
 
-async function getSession () {
+async function getCurrentSession () {
     return (await chrome.storage.local.get('workspaceSession'))['workspaceSession'] || {}
+}
+
+async function saveCurrentSesion () {
+    const session = await getCurrentSession()
+    if (!session.name) {
+        return
+    }
+
+    session.tabs = await chrome.tabs.query({})
+    await chrome.storage.local.set({ [session.name]: session })
 }
 
 async function switchMode () {
@@ -75,17 +86,17 @@ async function restoreSession (sessionName) {
             }
         })
         if (isSame) {
-            await setSession(nextSession)
+            await setCurrentSession(nextSession)
             return
         }
     }
 
-    await setSession(nextSession)
+    await setCurrentSession(nextSession)
     syncSessionTabs()
 }
 
 async function createNewSession (sessionName) {
-    setSession({
+    setCurrentSession({
         name: sessionName,
         tabs: [
             {
@@ -99,7 +110,7 @@ async function createNewSession (sessionName) {
 
 async function syncSessionTabs () {
     const oldTabs = await chrome.tabs.query({})
-    for await (let newTab of (await getSession()).tabs) {
+    for await (let newTab of (await getCurrentSession()).tabs) {
         if (newTab.url) {
             await chrome.tabs.create({ url: newTab.url, active: newTab.active })
         } else {
@@ -108,16 +119,6 @@ async function syncSessionTabs () {
     }
     const oldTabIds = oldTabs.map(oldTab => oldTab.id)
     await chrome.tabs.remove(oldTabIds)
-}
-
-async function saveCurrentSesion () {
-    const session = await getSession()
-    if (!session.name) {
-        return
-    }
-
-    session.tabs = await chrome.tabs.query({})
-    await chrome.storage.local.set({ [session.name]: session })
 }
 
 function findActiveTmuxWindow() {
@@ -137,7 +138,7 @@ function findActiveTmuxWindow() {
 
 async function afterTmuxWindowCheckFunc (tmuxWindowName) {
     const mode = await getMode()
-    const session = await getSession()
+    const session = await getCurrentSession()
     if (mode === FREE_MODE_KEY && session.name !== FREE_MODE_KEY) {
         restoreSession(FREE_MODE_KEY)
         return
@@ -153,7 +154,7 @@ async function afterTmuxWindowCheckFunc (tmuxWindowName) {
 
 async function updateBadge () {
     const mode = await getMode()
-    const session = await getSession()
+    const session = await getCurrentSession()
     if (mode === FREE_MODE_KEY) {
         await chrome.action.setBadgeText({ text: mode })
     } else {
