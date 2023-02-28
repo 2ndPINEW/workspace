@@ -1,0 +1,43 @@
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <div class="side-by-side">
+      <div class="sessions"></div>
+      <div class="tabs"></div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
+
+<style>
+  html {
+    width: max-content;
+  }
+
+  .side-by-side {
+    display: flex;
+    gap: 8px;
+  }
+
+  .session-title {
+    font-size: 16px;
+    padding: 4px;
+    border-radius: 4px;
+  }
+  .session-title.active {
+    background-color: #FB5824;
+    color: white;
+  }
+
+  .tab-title {
+    font-size: 14px;
+    padding: 4px;
+    border-radius: 4px;
+  }
+
+  p {
+    display: inline;
+  }
+</style>

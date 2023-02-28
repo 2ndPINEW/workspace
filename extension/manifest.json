@@ -33,6 +33,6 @@
     "default_icon": {
       "512": "icon.png"
     },
-    "default_popup": "popup.html"
+    "default_popup": "popup/index.html"
   }
 }
