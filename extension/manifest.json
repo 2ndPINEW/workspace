@@ -28,5 +28,10 @@
       },
       "description": "タブをフリーセッションに移動する"
     }
+  },
+  "action": {
+    "default_icon": {
+      "512": "icon.png"
+    }
   }
 }

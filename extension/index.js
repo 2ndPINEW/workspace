@@ -15,6 +15,7 @@ async function getMode () {
 
 async function setSession (session) {
     await chrome.storage.local.set({ workspaceSession: session })
+    await updateBadge()
 }
 
 async function getSession () {
@@ -26,9 +27,7 @@ async function switchMode () {
     await setMode(mode)
     findActiveTmuxWindow()
 
-    if (await getMode() === FREE_MODE_KEY) {
-        createNotification('フリーモード', 'セッションは管理されていません')
-    }
+    await updateBadge()
 }
 
 async function moveCurrentTabToFreeSession () {
@@ -63,10 +62,6 @@ async function restoreSession (sessionName) {
     if (!nextSession) {
         createNewSession(sessionName)
         return
-    }
-
-    if (sessionName !== FREE_MODE_KEY) {
-        createNotification('セッション管理中', `${sessionName}を開きました`)
     }
 
     // 次のセッションと今開いているタブの内容が同じ場合
@@ -155,6 +150,16 @@ async function afterTmuxWindowCheckFunc (tmuxWindowName) {
     restoreSession(tmuxWindowName)
 }
 
+async function updateBadge () {
+    const mode = await getMode()
+    const session = await getSession()
+    if (mode === FREE_MODE_KEY) {
+        await chrome.action.setBadgeText({ text: mode })
+    } else {
+        await chrome.action.setBadgeText({ text: session.name })
+    }
+}
+
 /**
  * 通知を表示する
  * @param {string} title 
@@ -190,4 +195,12 @@ chrome.tabs.onCreated.addListener(
 
 chrome.tabs.onUpdated.addListener(
     () => saveCurrentSesion()
+)
+
+chrome.action.setBadgeBackgroundColor(
+    {color: '#FFFFFF'}
+)
+
+chrome.action.setBadgeTextColor(
+    {color: '#000000'}
 )
