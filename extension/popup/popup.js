@@ -20,17 +20,21 @@ async function updateSesionList () {
     sessionElement.className = sessionName === nowSession.name ? 'session-title active' : 'session-title'
     sessionsElement.appendChild(sessionElement)
   })
+
 }
 
 async function updateTabList () {
   const nowSession = await getSession()
+  const allSesions = await chrome.storage.local.get(null)
+
   const tabsElement = document.querySelector('.tabs')
   tabsElement.innerHTML = ''
 
-  nowSession.tabs.forEach(tab => {
+  const session = allSesions[nowSession.name]
+  session.tabs.forEach(tab => {
     const tabElement = document.createElement('div')
     tabElement.innerHTML = tab.title
-    tabElement.className = 'tab-title'
+    tabElement.className = tab.active ? 'tab-title active' : 'tab-title'
     tabsElement.appendChild(tabElement)
   })
 }
