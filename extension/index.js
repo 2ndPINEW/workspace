@@ -128,7 +128,8 @@ function findActiveTmuxWindow() {
             createNotification('エラー', 'アクティブなtmuxセッションまたはウィンドウが見つかりません')
             return
         }
-        afterTmuxWindowCheckFunc(tmuxWindowName)
+        await afterTmuxWindowCheckFunc(tmuxWindowName)
+        await updateBadge()
     }).catch(e => {
         createNotification('通信エラー', e.toString())
     })
