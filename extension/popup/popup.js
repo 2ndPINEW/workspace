@@ -20,7 +20,6 @@ async function updateSesionList () {
     sessionElement.className = sessionName === nowSession.name ? 'session-title active' : 'session-title'
     sessionsElement.appendChild(sessionElement)
   })
-
 }
 
 async function updateTabList () {
