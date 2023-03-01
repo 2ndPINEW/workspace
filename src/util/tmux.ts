@@ -5,8 +5,21 @@ interface Window {
   active: boolean
 }
 
+const sessionName = 'WORKSPACE_MANAGER'
+
+async function isSessionExist (): Promise<boolean> {
+  const p = Deno.run({ cmd: ["tmux", "ls"], stdout: "piped" });
+  await p.status();
+  const stdout = new TextDecoder().decode(await p.output());
+  return stdout.includes(sessionName)
+}
+
 export async function lsw (): Promise<Window[]> {
-  const p = Deno.run({ cmd: ["tmux", "lsw"], stdout: "piped" });
+  const sessionExist = await isSessionExist()
+  if (!sessionExist) {
+    throw new Error('管理対象のtmuxセッションがありません')
+  }
+  const p = Deno.run({ cmd: ["tmux", "lsw", "-t", sessionName], stdout: "piped" });
   await p.status();
   const stdout = new TextDecoder().decode(await p.output());
   const lines = stdout.split("\n");
