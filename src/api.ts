@@ -4,6 +4,7 @@ import {
   RouterContext,
 } from "https://deno.land/x/oak@v6.5.0/mod.ts";
 import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
+import { lsw } from "./tmux.ts";
 
 const app = new Application();
 const router = new Router();
@@ -20,19 +21,17 @@ app.addEventListener("error", (evt) => {
   console.log(evt.error);
 });
 
-router.get("/active", async (ctx: RouterContext) => {
-  const p = Deno.run({ cmd: ["tmux", "lsw"], stdout: "piped" });
-  await p.status();
-  const stdout = new TextDecoder().decode(await p.output());
-  const lines = stdout.split("\n");
-  const activeLine = lines.find((line) => line.includes("(active)"));
-  const windowNameMatcher =
-    /(?<index>[0-9]{1}): (?<name>[\w/:%#\$&\?~\.=\+\-]+)(?<current>\*?) \((?<panel>[0-9]{1}) panes\)/;
-  const { name } = activeLine?.match(windowNameMatcher)?.groups as {
-    name: string;
-  };
+router.get("/tmux/windows", async (ctx: RouterContext) => {
   ctx.response.body = {
-    window_name: name,
+    windows: await lsw(),
+  };
+});
+
+router.get("/tmux/windows/active", async (ctx: RouterContext) => {
+  const windows = await lsw()
+  const activeWindow = windows.find(window => window.active)
+  ctx.response.body = {
+    window: activeWindow,
   };
 });
 

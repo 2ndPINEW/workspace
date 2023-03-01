@@ -122,9 +122,9 @@ async function syncSessionTabs () {
 }
 
 function findActiveTmuxWindow() {
-    fetch(`${API_BASE}active`).then(async (res) => {
+    fetch(`${API_BASE}tmux/windows/active`).then(async (res) => {
         const json = await res.json()
-        const tmuxWindowName = json.window_name
+        const tmuxWindowName = json.window.name
         if (!tmuxWindowName) {
             createNotification('エラー', 'アクティブなtmuxセッションまたはウィンドウが見つかりません')
             return
