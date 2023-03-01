@@ -2,4 +2,3 @@ work.sh
 fallback.json
 
 *.code-workspace
-workspace.conf

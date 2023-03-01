@@ -1,8 +1,8 @@
 #!/bin/zsh
 # セッションの名前
-SESSION_NAME=personal
+SESSION_NAME=WORKSPACE_MANAGER
 
-source tmux_layout/workspace.conf
+source src/shell/workspace.conf
 
 # 同じレイアウトで複数のワークスペースを作成
 # 同じレイアウトで複数のワークスペースを作成
@@ -22,7 +22,7 @@ for ((I=1; I<=$WORKSPACE_COUNT; I++)); do
   # ウィンドウの名前を変更
   tmux rename-window "$WORKSPACE_NAME[$I]"
 
-  zsh tmux_layout/make_layout.sh
+  zsh src/shell/make_layout.sh
 done
 # 最初のウィンドウにフォーカスする
 tmux select-window -t 0
