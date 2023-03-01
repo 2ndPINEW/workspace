@@ -6,6 +6,7 @@ import {
 import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
 import { lsw } from "./util/tmux.ts";
 import { workspaces } from "./util/vscode.ts";
+import { createWindow, initWorkspace } from "./util/workspace.ts";
 
 const app = new Application();
 const router = new Router();
@@ -28,6 +29,20 @@ router.get("/workspaces", async (ctx: RouterContext) => {
   }
 })
 
+router.post("/workspace/init", async (ctx: RouterContext) => {
+  const body = ctx.request.body();
+  const json = await body.value;
+  const sshRepoUrl = json.ssh_repo_url;
+  if (!sshRepoUrl) {
+    ctx.response.status = 500
+    return
+  }
+  await initWorkspace(sshRepoUrl)
+  ctx.response.body = {
+    status: 200,
+  };
+});
+
 router.get("/tmux/windows", async (ctx: RouterContext) => {
   ctx.response.body = {
     windows: await lsw(),
@@ -39,6 +54,18 @@ router.get("/tmux/windows/active", async (ctx: RouterContext) => {
   const activeWindow = windows.find(window => window.active)
   ctx.response.body = {
     window: activeWindow,
+  };
+});
+
+router.get("/tmux/windows/:windowName/create", async (ctx: RouterContext) => {
+  const windowName = ctx.params.windowName
+  if (!windowName) {
+    ctx.response.status = 500
+    return
+  }
+  await createWindow(windowName)
+  ctx.response.body = {
+    status: 200,
   };
 });
 
