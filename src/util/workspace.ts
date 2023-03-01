@@ -1,5 +1,18 @@
 import { workspaces } from "./vscode.ts";
 
+export async function switchWindow (name: string) {
+  const vscodeWorkspaces = await workspaces()
+  const targetWorkspace = vscodeWorkspaces.find(vscodeWorkspace => vscodeWorkspace.name === name)
+  if (!targetWorkspace) {
+    throw new Error('VSCodeのワークスペースが存在しないので、tmuxウィンドウを切り替えできません')
+  }
+  if (!targetWorkspace.hasTmuxWindow) {
+    throw new Error('tmuxウィンドウがないので切り替えできません')
+  }
+  const add = Deno.run({ cmd: ["tmux", "selectw", "-t", name], stdout: "piped" });
+  await add.status()
+}
+
 /** 渡した名前のワークスペースを作る */
 export async function createWindow (name: string) {
   const vscodeWorkspaces = await workspaces()

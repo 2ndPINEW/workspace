@@ -6,7 +6,7 @@ import {
 import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
 import { lsw } from "./util/tmux.ts";
 import { workspaces } from "./util/vscode.ts";
-import { createWindow, initWorkspace } from "./util/workspace.ts";
+import { createWindow, initWorkspace, switchWindow } from "./util/workspace.ts";
 
 const app = new Application();
 const router = new Router();
@@ -64,6 +64,18 @@ router.get("/tmux/windows/:windowName/create", async (ctx: RouterContext) => {
     return
   }
   await createWindow(windowName)
+  ctx.response.body = {
+    status: 200,
+  };
+});
+
+router.get("/tmux/windows/:windowName/switch", async (ctx: RouterContext) => {
+  const windowName = ctx.params.windowName
+  if (!windowName) {
+    ctx.response.status = 500
+    return
+  }
+  await switchWindow(windowName)
   ctx.response.body = {
     status: 200,
   };
