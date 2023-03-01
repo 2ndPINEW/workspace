@@ -1,42 +1,33 @@
-
-async function getMode () {
-  return (await chrome.storage.local.get('workspaceMode'))['workspaceMode'] || MANAGE_MODE_KEY
-}
-
-async function getSession () {
-  return (await chrome.storage.local.get('workspaceSession'))['workspaceSession'] || {}
-}
+const API_BASE = 'http://localhost:9281/'
 
 async function updateSesionList () {
   const sessionsElement = document.querySelector('.sessions')
   sessionsElement.innerHTML = ''
-  const nowSession = await getSession()
 
-  const allSesions = await chrome.storage.local.get(null)
-  const allSesionNames = Object.keys(allSesions).filter(key => key !== 'workspaceSession' && key !== 'workspaceMode')
-  allSesionNames.forEach(sessionName => {
+  const res = await fetch(`${API_BASE}workspaces`)
+  const workspaces = (await res.json()).workspaces
+
+  workspaces.forEach(workspace => {
+    const statusClass = workspace.isTmuxWindowActive ? 'active' : workspace.hasTmuxWindow ? 'ready' : 'disable'
+
     const sessionElement = document.createElement('div')
-    sessionElement.innerHTML = sessionName
-    sessionElement.className = sessionName === nowSession.name ? 'session-title active' : 'session-title'
+    sessionElement.innerHTML = workspace.name
+    sessionElement.className = `session-title ${statusClass}`
+
+    sessionElement.addEventListener('click', async () => {
+      if (statusClass === 'disable') {
+        await fetch(`${API_BASE}tmux/windows/${workspace.name}/create`)
+        updateSesionList()
+      }
+
+      if (statusClass === 'ready') {
+        await fetch(`${API_BASE}tmux/windows/${workspace.name}/switch`)
+        updateSesionList()
+      }
+    })
+
     sessionsElement.appendChild(sessionElement)
   })
 }
 
-async function updateTabList () {
-  const nowSession = await getSession()
-  const allSesions = await chrome.storage.local.get(null)
-
-  const tabsElement = document.querySelector('.tabs')
-  tabsElement.innerHTML = ''
-
-  const session = allSesions[nowSession.name]
-  session.tabs.forEach(tab => {
-    const tabElement = document.createElement('div')
-    tabElement.innerHTML = tab.title
-    tabElement.className = tab.active ? 'tab-title active' : 'tab-title'
-    tabsElement.appendChild(tabElement)
-  })
-}
-
 updateSesionList()
-updateTabList()

@@ -3,10 +3,7 @@
     <meta charset="UTF-8">
   </head>
   <body>
-    <div class="side-by-side">
-      <div class="sessions"></div>
-      <div class="tabs"></div>
-    </div>
+    <div class="sessions"></div>
     <script src="popup.js"></script>
   </body>
 </html>
@@ -16,28 +13,24 @@
     width: max-content;
   }
 
-  .side-by-side {
-    display: flex;
-    gap: 8px;
-  }
-
   .session-title {
     font-size: 16px;
-    padding: 4px;
+    padding: 4px 8px;
     border-radius: 4px;
+    margin: 4px 0px;
+    cursor: pointer;
   }
   .session-title.active {
     background-color: #FB5824;
     color: white;
+    cursor: unset;
   }
-
-  .tab-title {
-    font-size: 14px;
-    padding: 4px;
-    border-radius: 4px;
+  .session-title.ready {
+    background-color: #26c952;
+    color: white;
   }
-  .tab-title.active {
-    background-color: #FB5824;
+  .session-title.disable {
+    background-color: #727272;
     color: white;
   }
 
