@@ -19,14 +19,20 @@ export async function lsw (): Promise<Window[]> {
   if (!sessionExist) {
     throw new Error('管理対象のtmuxセッションがありません')
   }
-  const p = Deno.run({ cmd: ["tmux", "lsw", "-t", sessionName], stdout: "piped" });
+  const p = Deno.run({ cmd: ["tmux", "lsw"], stdout: "piped" });
   await p.status();
   const stdout = new TextDecoder().decode(await p.output());
   const lines = stdout.split("\n");
   const windows = lines.map(line => {
     const matcheResult = line.match(windowNameMatcher)?.groups
+
+    // 最後に-がつくの正規表現で防げなくない？？
+    let name = matcheResult?.name ?? ''
+    if (name.endsWith('-')) {
+      name = name.slice(0, name.length - 1)
+    }
     return {
-      name: matcheResult?.name ?? '',
+      name,
       active: line.includes('(active)')
     }
   }).filter(v => !!v.name)
