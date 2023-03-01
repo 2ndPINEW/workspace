@@ -4,7 +4,7 @@ import {
   RouterContext,
 } from "https://deno.land/x/oak@v6.5.0/mod.ts";
 import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
-import { lsw } from "./tmux.ts";
+import { lsw } from "./util/tmux.ts";
 
 const app = new Application();
 const router = new Router();
