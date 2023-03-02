@@ -1,4 +1,7 @@
 work.sh
 fallback.json
 
+node_modules/
+dist/
+
 *.code-workspace

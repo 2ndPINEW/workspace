@@ -29,6 +29,14 @@ router.get("/workspaces", async (ctx: RouterContext) => {
   }
 })
 
+router.get("/workspaces/active", async (ctx: RouterContext) => {
+  const vscodeWorkspaces = await workspaces()
+  const activeWorkspace = vscodeWorkspaces.find(workspace => workspace.isTmuxWindowActive)
+  ctx.response.body = {
+    workspace: activeWorkspace
+  }
+})
+
 router.post("/workspace/init", async (ctx: RouterContext) => {
   const body = ctx.request.body();
   const json = await body.value;
