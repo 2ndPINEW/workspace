@@ -3,6 +3,9 @@
   "displayName": "vscode-workspace-manager",
   "description": "",
   "version": "0.0.1",
+  "repository": {
+    "url": "https://github.com/2ndPINEW/workspace"
+  },
   "engines": {
     "vscode": "^1.75.0"
   },
@@ -26,7 +29,7 @@
     "@types/glob": "^8.0.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
-    "@types/vscode": "^1.76.0",
+    "@types/vscode": "^1.75.0",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
     "@vscode/test-electron": "^2.2.0",
