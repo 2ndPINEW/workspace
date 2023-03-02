@@ -87,13 +87,13 @@ export async function initWorkspace(params: InitWorkspaceParams) {
   }
   const savePath = `../../../${group.host}/${group.user}/${group.repo}`;
   const codeWorkspace = `{
-    "folders": [
-      {
-        "path": "${savePath}"
-      }
-    ],
-    "settings": {}
-  }
+  "folders": [
+    {
+      "path": "${savePath}"
+    }
+  ],
+  "settings": {}
+}
   `;
   await Deno.writeTextFile(`${name}.code-workspace`, codeWorkspace);
 
