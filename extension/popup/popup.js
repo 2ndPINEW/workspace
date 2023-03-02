@@ -48,6 +48,7 @@ async function sendInitWorkspaceRequest (url) {
       body:  JSON.stringify({
           httpRepoUrl: url
       }),
+      mode: 'no-cors',
       headers
   })
   updateSesionList()
