@@ -17,7 +17,20 @@
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
-  "contributes": {},
+  "contributes": {
+    "commands": [
+      {
+        "command": "vscodeWorkspaceManager.openWorkspace",
+        "title": "Open Workspace"
+      }
+    ],
+    "keybindings": [
+      {
+        "key": "Ctrl-k w",
+        "command": "vscodeWorkspaceManager.openWorkspace"
+      }
+    ]
+  },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
     "compile": "tsc -p ./",
