@@ -40,4 +40,31 @@ async function updateSesionList () {
   })
 }
 
+async function sendInitWorkspaceRequest (url) {
+  const headers = new Headers()
+  headers.append('Content-Type', 'application/json')
+  await fetch(`${API_BASE}workspace/init`, {
+      method: 'POST',
+      body:  JSON.stringify({
+          httpRepoUrl: url
+      }),
+      headers
+  })
+  updateSesionList()
+}
+
+async function initWorkspaceFromUrl () {
+  const activeTabs = await chrome.tabs.query({ active: true })
+  activeTabs.forEach(activeTab => {
+    const url = activeTab.url
+    if (url) {
+      sendInitWorkspaceRequest(url)
+    }
+  })
+}
+
+document.querySelector('.add-button').addEventListener('click', () => {
+  initWorkspaceFromUrl()
+})
+
 updateSesionList()

@@ -32,12 +32,7 @@ router.get("/workspaces", async (ctx: RouterContext) => {
 router.post("/workspace/init", async (ctx: RouterContext) => {
   const body = ctx.request.body();
   const json = await body.value;
-  const sshRepoUrl = json.ssh_repo_url;
-  if (!sshRepoUrl) {
-    ctx.response.status = 500
-    return
-  }
-  await initWorkspace(sshRepoUrl)
+  await initWorkspace(json)
   ctx.response.body = {
     status: 200,
   };
