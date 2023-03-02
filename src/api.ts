@@ -32,7 +32,7 @@ router.get("/workspaces", async (ctx: RouterContext) => {
 router.post("/workspace/init", async (ctx: RouterContext) => {
   const body = ctx.request.body();
   const json = await body.value;
-  await initWorkspace(json)
+  await initWorkspace(JSON.parse(json))
   ctx.response.body = {
     status: 200,
   };
