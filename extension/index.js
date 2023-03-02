@@ -2,6 +2,7 @@
 // 1ファイルJSの綺麗な書き方わからん
 
 const API_BASE = 'http://localhost:9281/'
+
 const FREE_MODE_KEY = 'FREE'
 const MANAGE_MODE_KEY = 'MANAGE'
 
@@ -206,3 +207,9 @@ chrome.action.setBadgeBackgroundColor(
 chrome.action.setBadgeTextColor(
     {color: '#000000'}
 )
+
+chrome.runtime.onMessage.addListener((message) => {
+    if (message.type === 'session-recheck') {
+        findActiveTmuxWindow()
+    }
+})

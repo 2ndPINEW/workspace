@@ -1,6 +1,16 @@
 const API_BASE = 'http://localhost:9281/'
 
+function makeRequestObject (type) {
+  return { type }
+}
+
+function sendSessionRecheckRequest () {
+  const message = makeRequestObject('session-recheck')
+  chrome.runtime.sendMessage(message)
+}
+
 async function updateSesionList () {
+  sendSessionRecheckRequest()
   const sessionsElement = document.querySelector('.sessions')
   sessionsElement.innerHTML = ''
 
