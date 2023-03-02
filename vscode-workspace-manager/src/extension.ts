@@ -35,8 +35,7 @@ async function openWorkspacePrompt() {
     (entry) =>
       <vscode.QuickPickItem>{
         label: entry.name,
-        description: entry.hasTmuxWindow ? '' : '・',
-        detail: entry.path
+        description: entry.path
       }
   );
 
@@ -53,7 +52,7 @@ async function openWorkspacePrompt() {
       }
 
       const entry = workspaceEntries.find(
-        (entry) => entry.path === workspaceItem.detail
+        (entry) => entry.path === workspaceItem.description
       );
 
       if (!entry) {
