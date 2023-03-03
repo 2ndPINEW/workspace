@@ -7,6 +7,7 @@ import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
 import { lsw } from "./util/tmux.ts";
 import { workspaces } from "./util/vscode.ts";
 import { createWindow, initWorkspace, switchWindow } from "./util/workspace.ts";
+import { sleep } from "https://deno.land/x/sleep@v1.2.1/mod.ts";
 
 const app = new Application();
 const router = new Router();
@@ -79,6 +80,20 @@ router.get("/tmux/windows/:windowName/switch", async (ctx: RouterContext) => {
     return
   }
   await switchWindow(windowName)
+  ctx.response.body = {
+    status: 200,
+  };
+});
+
+router.get("/sleep/:time", async (ctx: RouterContext) => {
+  const time = ctx.params.time
+  if (!time) {
+    ctx.response.body = {
+      status: 500,
+    };
+    return
+  }
+  await sleep(Number(time))
   ctx.response.body = {
     status: 200,
   };
