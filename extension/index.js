@@ -212,15 +212,4 @@ chrome.runtime.onMessage.addListener((message) => {
     }
 })
 
-async function loop () {
-    while (true) {
-        const res = await fetch(`${API_BASE}sleep/1`)
-        if (res.status !== 200) {
-            break
-        }
-        findActiveTmuxWindow()
-    }   
-}
-
 findActiveTmuxWindow()
-loop()
