@@ -70,7 +70,7 @@ export async function initWorkspace(params: InitWorkspaceParams) {
   if (!sshUrl) {
     throw new Error('sshurl 作れん')
   }
-  const name = group.repo;
+  const name = `${group.repo}_${group.user}`;
 
   const vscodeWorkspaces = await workspaces();
   const targetWorkspace = vscodeWorkspaces.find(
