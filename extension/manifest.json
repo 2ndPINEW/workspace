@@ -23,8 +23,8 @@
     },
     "tabMove": {
       "suggested_key": {
-        "default": "Ctrl+I",
-        "mac": "Command+I"
+        "default": "Ctrl+K",
+        "mac": "Command+K"
       },
       "description": "タブをフリーセッションに移動する"
     }

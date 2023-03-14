@@ -3,10 +3,11 @@ import axios from "axios";
 const API_BASE = "http://localhost:9281/";
 
 export interface Workspace {
-	name: string
-	path: string
-	hasTmuxWindow: boolean
-	isTmuxWindowActive: boolean
+  name: string;
+  path: string;
+  hasTmuxWindow: boolean;
+  isTmuxWindowActive: boolean;
+  codeWorkspaceFilePath: string;
 }
 
 export async function fetchWorkspaces(): Promise<Workspace[]> {

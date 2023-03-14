@@ -1,5 +1,11 @@
 import * as vscode from "vscode";
-import { createWorkspaceWindow, fetchActiveWorkspace, fetchWorkspaces, switchWorkspaceWindow, Workspace } from "./util";
+import {
+  createWorkspaceWindow,
+  fetchActiveWorkspace,
+  fetchWorkspaces,
+  switchWorkspaceWindow,
+  Workspace,
+} from "./util";
 
 export function activate(context: vscode.ExtensionContext) {
   const disposables = [];
@@ -24,8 +30,10 @@ export function deactivate() {}
 
 async function openWorkspacePrompt() {
   const currentWokspaceName = vscode.workspace.name;
-  const workspaceEntries = (await fetchWorkspaces()).filter(entry => entry.name !== currentWokspaceName);
-  
+  const workspaceEntries = (await fetchWorkspaces()).filter(
+    (entry) => entry.name !== currentWokspaceName
+  );
+
   if (!workspaceEntries.length || workspaceEntries.length <= 0) {
     vscode.window.showInformationMessage("No workspaces found");
     return;
@@ -35,7 +43,7 @@ async function openWorkspacePrompt() {
     (entry) =>
       <vscode.QuickPickItem>{
         label: entry.name,
-        description: entry.path
+        description: entry.path,
       }
   );
 
@@ -69,7 +77,7 @@ async function checkActiveWorkspace() {
   const targetWorkspace = await fetchActiveWorkspace();
   const currentWokspaceName = vscode.workspace.name;
   if (targetWorkspace.name !== currentWokspaceName) {
-    openWorkspace(targetWorkspace.path);
+    openWorkspace(targetWorkspace.codeWorkspaceFilePath);
   }
 }
 
