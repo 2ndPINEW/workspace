@@ -18,6 +18,10 @@ for ((I=1; I<=$WORKSPACE_COUNT; I++)); do
   if [ $WORKSPACE_NAME[$I] = 'workspace' ]; then
     tmux send-keys 'deno task serve' Enter
   fi
+
+    if [ $WORKSPACE_NAME[$I] = 'lyric-crawler' ]; then
+    tmux send-keys 'deno run -A server.ts' Enter
+  fi
   
   # ウィンドウの名前を変更
   tmux rename-window "$WORKSPACE_NAME[$I]"
