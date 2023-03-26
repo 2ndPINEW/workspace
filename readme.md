@@ -1,1 +1,4 @@
-ln -sf ~/dev/github.com/2ndPINEW/workspace ~/workspace
+# workspace
+ワークスペースをいい感じに管理するための詰め合わせセット
+
+# 使い方手順(wip)
