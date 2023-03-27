@@ -6,6 +6,10 @@ const API_BASE = "http://localhost:9281/";
 const FREE_MODE_KEY = "FREE";
 const MANAGE_MODE_KEY = "MANAGE";
 
+const ignoreUrls = [
+  "https://meet.google.com/"
+]
+
 async function setMode(mode) {
   await chrome.storage.local.set({ workspaceMode: mode });
 }
@@ -36,7 +40,7 @@ async function saveCurrentSesion() {
     return;
   }
 
-  session.tabs = await chrome.tabs.query({});
+  session.tabs = (await chrome.tabs.query({})).filter(tab => !ignoreUrls.some(ignoreUrl => tab.url.includes(ignoreUrl)));
   await chrome.storage.local.set({ [session.name]: session });
 }
 
@@ -92,7 +96,7 @@ async function restoreSession(sessionName) {
 
   // 次のセッションと今開いているタブの内容が同じ場合
   // 内部で保持してるオブジェクトだけ更新する
-  const tabs = await chrome.tabs.query({});
+  const tabs = (await chrome.tabs.query({})).filter(tab => !ignoreUrls.some(ignoreUrl => tab.url.includes(ignoreUrl)));
   if (tabs?.length === nextSession.tabs.length) {
     let isSame = true;
     tabs.forEach((tab, i) => {
@@ -124,7 +128,7 @@ async function createNewSession(sessionName) {
 }
 
 async function syncSessionTabs() {
-  const oldTabs = await chrome.tabs.query({});
+  const oldTabs = (await chrome.tabs.query({})).filter(tab => !ignoreUrls.some(ignoreUrl => tab.url.includes(ignoreUrl)));
   for await (let newTab of (await getCurrentSession()).tabs) {
     if (newTab.url) {
       await chrome.tabs.create({ url: newTab.url, active: newTab.active });
@@ -218,12 +222,3 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 findActiveTmuxWindow();
-
-chrome.webRequest.onCompleted.addListener(
-  (detail) => {
-    console.log(detail);
-  },
-  {
-    urls: ["https://fe.mesk.skill.music.a2z.com/api/showLyrics"],
-  }
-);
