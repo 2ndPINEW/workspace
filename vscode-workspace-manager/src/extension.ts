@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   setInterval(() => {
     checkActiveWorkspace();
-  }, 1000);
+  }, 5000);
 
   checkActiveWorkspace();
 }

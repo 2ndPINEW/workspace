@@ -2,7 +2,7 @@
   "name": "vscode-workspace-manager",
   "displayName": "vscode-workspace-manager",
   "description": "",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "sekapi",
   "repository": {
     "url": "https://github.com/2ndPINEW/workspace"
